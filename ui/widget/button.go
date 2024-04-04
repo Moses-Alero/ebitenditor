@@ -32,24 +32,28 @@ func NewButton(w engine.World, builder *ButtonBuilder) {
 }
 
 func (btn *Button) Update(w engine.World) {
-	button, ok := w.View(
+	button := w.View(
 		component.Bounds{},
 		component.Icon{},
 		component.BackGround{},
 		component.Clickable{},
-	).Get()
+		component.ActionHandler{},
+	)
 
-	if !ok {
-		return
-	}
+	button.Each(func (entity engine.Entity){
+		var bounds *component.Bounds
+		var icon *component.Icon
+		var bg *component.BackGround
+		var clickable *component.Clickable
+		var action *component.ActionHandler
 
-	var bounds *component.Bounds
-	var icon *component.Icon
-	var bgColor *component.BackGround
-	var clickable *component.Clickable
-
-	button.Get(&bounds, &icon, &bgColor, &clickable)
-
+		entity.Get(&bounds, &icon, &bg, &clickable, &action)
+		
+			
+		if action.Do != nil{
+			action.Do()
+		}
+	})
 }
 
 func (btn *Button) Draw(w engine.World, screen *ebiten.Image) {
@@ -68,6 +72,11 @@ func (btn *Button) Draw(w engine.World, screen *ebiten.Image) {
 
 		entity.Get(&bounds, &icon, &bg, &clickable)
 
+		if bounds.Position.X == 0 && bounds.Position.Y == 0 {
+			bounds.Position = component.Position{350, 350}
+			bounds.W, bounds.H = 20,20
+		}
+
 		opts := &ebiten.DrawImageOptions{}
 		opts.GeoM.Translate(bounds.Position.X, bounds.Position.Y)
 		if icon.Img != nil {
@@ -75,14 +84,14 @@ func (btn *Button) Draw(w engine.World, screen *ebiten.Image) {
 		} else if icon.Img == nil {
 			vector.DrawFilledRect(screen, float32(bounds.Position.X), float32(bounds.Position.Y), float32(bounds.W), float32(bounds.H), bg.Color, false)
 		}
-
 	})	
 }
 
 func (btn *Button) Setup(w engine.World, button *ButtonBuilder) {
 	w.AddComponents(
 		component.Position{}, component.Icon{},
-		component.BackGround{}, component.Bounds{}, component.Clickable{},
+		component.BackGround{}, component.Bounds{}, 
+		component.Clickable{}, component.ActionHandler{},
 	)
 
 	w.AddSystems(
@@ -90,6 +99,5 @@ func (btn *Button) Setup(w engine.World, button *ButtonBuilder) {
 	)
 
 	w.AddEntities(button)
-
 }
 

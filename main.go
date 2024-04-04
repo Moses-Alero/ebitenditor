@@ -32,6 +32,13 @@ func (g *Game) Setup(w engine.World) {
 		BackGround: component.BackGround{
 			Color: color.RGBA{255, 0, 255, 1},
 		},
+		ActionHandler: component.ActionHandler{
+			Do: func(d ...interface{}){
+				if ebiten.IsKeyPressed(ebiten.KeyDown){
+					fmt.Println(d)		
+				}
+			},
+		},	
 	})
 
 	widget.NewButton(w, &widget.ButtonBuilder{
@@ -43,6 +50,8 @@ func (g *Game) Setup(w engine.World) {
 			Color: color.RGBA{0, 0, 255, 1},
 		},
 	})
+
+	widget.NewButton(w, (&widget.ButtonBuilder{}).NewButton())
 
 }
 
