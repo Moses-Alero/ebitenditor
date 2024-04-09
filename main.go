@@ -27,7 +27,7 @@ func (g *Game) Setup(w engine.World) {
 	widget.NewButton(w, &widget.ButtonBuilder{
 		Bounds: component.Bounds{
 			Position: component.Position{X: 250, Y: 250}, 
-			W: 10, H: 25,
+			W: 35, H: 20,
 		},
 		BackGround: component.BackGround{
 			Color: color.RGBA{255, 0, 255, 1},
@@ -39,16 +39,23 @@ func (g *Game) Setup(w engine.World) {
 				}
 			},
 		},	
+		Text: component.Text{
+			Text: "Submit",
+		},
 	})
 
 	widget.NewButton(w, &widget.ButtonBuilder{
 		Bounds: component.Bounds{
-			Position: component.Position{X: 250, Y: 250}, 
-			W: 50, H: 50,
+			Position: component.Position{X: 350, Y: 350}, 
+			W: 35, H: 20,
 		},
 		BackGround: component.BackGround{
 			Color: color.RGBA{0, 0, 255, 1},
 		},
+		Text: component.Text{
+			Text: "Submit",
+		},
+
 	})
 
 	widget.NewButton(w, (&widget.ButtonBuilder{}).NewButton())

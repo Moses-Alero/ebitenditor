@@ -10,4 +10,5 @@ type Button struct {
 	component.BackGround
 	component.Clickable
 	component.ActionHandler
+	component.Text
 }

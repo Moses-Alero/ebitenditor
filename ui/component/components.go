@@ -86,3 +86,7 @@ type Input struct {
 
 	//touchscreenPlatform bool
 }
+
+type Text struct {
+	Text  string
+}

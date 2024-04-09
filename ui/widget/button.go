@@ -1,13 +1,23 @@
 package widget
 
 import (
+	"bytes"
 	"ebitenditor/ui/component"
 	"ebitenditor/ui/entity"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/sedyh/mizu/pkg/engine"
+
+	_ "embed"
+)
+
+var (
+	//go:embed mplus-1p-regular.ttf
+	MPlus1pRegular_ttf []byte
+
 )
 
 type Button struct{}
@@ -20,8 +30,10 @@ func (btnBuilder *ButtonBuilder ) NewButton() *ButtonBuilder {
 		Icon: component.Icon{Img: nil},
 		BackGround: component.BackGround{Color: color.RGBA{255,255,255,0}},
 		Clickable: component.Clickable{IsClickable: true},
+		Text: component.Text{ Text: "Button"},
 	}
 }
+ 
 
 func NewButton(w engine.World, builder *ButtonBuilder) {
 	btn := new(Button)
@@ -57,20 +69,26 @@ func (btn *Button) Update(w engine.World) {
 }
 
 func (btn *Button) Draw(w engine.World, screen *ebiten.Image) {
+
+	s, _ := text.NewGoTextFaceSource(bytes.NewReader(MPlus1pRegular_ttf))
+
 	button := w.View(
 		component.Bounds{},
 		component.Icon{},
 		component.BackGround{},
 		component.Clickable{},
+		component.Text{},
 	)
 
 	button.Each(func(entity engine.Entity){
+
 		var bounds *component.Bounds
 		var icon *component.Icon
 		var bg *component.BackGround
 		var clickable *component.Clickable
+		var btnText *component.Text
 
-		entity.Get(&bounds, &icon, &bg, &clickable)
+		entity.Get(&bounds, &icon, &bg, &clickable, &btnText)
 
 		if bounds.Position.X == 0 && bounds.Position.Y == 0 {
 			bounds.Position = component.Position{350, 350}
@@ -78,10 +96,17 @@ func (btn *Button) Draw(w engine.World, screen *ebiten.Image) {
 		}
 
 		opts := &ebiten.DrawImageOptions{}
+		txtOpts := &text.DrawOptions{}
+		txtOpts.GeoM.Translate(bounds.Position.X, bounds.Position.Y)
+		face := &text.GoTextFace{
+			Source: s,
+			Size: 10,
+		}
 		opts.GeoM.Translate(bounds.Position.X, bounds.Position.Y)
 		if icon.Img != nil {
 			screen.DrawImage(icon.Img, opts)
 		} else if icon.Img == nil {
+			text.Draw(screen, btnText.Text, face, txtOpts)
 			vector.DrawFilledRect(screen, float32(bounds.Position.X), float32(bounds.Position.Y), float32(bounds.W), float32(bounds.H), bg.Color, false)
 		}
 	})	
@@ -92,6 +117,7 @@ func (btn *Button) Setup(w engine.World, button *ButtonBuilder) {
 		component.Position{}, component.Icon{},
 		component.BackGround{}, component.Bounds{}, 
 		component.Clickable{}, component.ActionHandler{},
+		component.Text{},
 	)
 
 	w.AddSystems(
