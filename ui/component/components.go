@@ -8,9 +8,12 @@ import (
 )
 
 type Bounds struct {
-	Position
 	W float64
 	H float64
+}
+
+func (bounds *Bounds) GetBounds() (float64, float64){
+	return bounds.W, bounds.H
 }
 
 type Icon struct {
@@ -43,6 +46,10 @@ type Position struct {
 	X, Y float64
 }
 
+func (pos *Position) GetPos() (float64, float64){
+	return pos.X, pos.Y
+}
+
 type Scale struct {
 	X, Y float64
 }
@@ -55,10 +62,13 @@ type Transform struct {
 	Position
 	Scale
 	Rotation
+	Bounds
 }
 
 type ActionHandler struct {
-	Do        func(params ...interface{})
+	Do        func()
+	Event     func(arg interface{}) bool
+	Tag       string
 }
 
 type Input struct {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ebitenditor/event"
 	"ebitenditor/ui/component"
 	"ebitenditor/ui/widget"
 	"fmt"
@@ -19,47 +20,76 @@ var (
 
 type Game struct{}
 
+
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return screenWidth, screenHeight
 }
 
 func (g *Game) Setup(w engine.World) {
+
 	widget.NewButton(w, &widget.ButtonBuilder{
-		Bounds: component.Bounds{
-			Position: component.Position{X: 250, Y: 250}, 
-			W: 35, H: 20,
+		Transform: component.Transform{
+			Position: component.Position{X: 350, Y: 350}, 
+			Bounds: component.Bounds{W: 50, H: 20},
 		},
 		BackGround: component.BackGround{
-			Color: color.RGBA{255, 0, 255, 1},
+			Color: color.RGBA{0, 0, 255, 0},
 		},
-		ActionHandler: component.ActionHandler{
-			Do: func(d ...interface{}){
-				if ebiten.IsKeyPressed(ebiten.KeyDown){
-					fmt.Println(d)		
-				}
-			},
-		},	
 		Text: component.Text{
 			Text: "Submit",
+		},
+		ActionHandler: component.ActionHandler{
+			Do: func(){
+				fmt.Println("I am doing something else")
+			},
+			Event: event.OnClick,
+			Tag: "Button 1",
+		},
+
+	})
+
+	widget.NewButton(w, &widget.ButtonBuilder{
+		Transform: component.Transform{
+			Position: component.Position{X: 450, Y: 450}, 
+			Bounds: component.Bounds{W: 50, H: 20},
+		},
+		BackGround: component.BackGround{
+			Color: color.RGBA{255, 0, 0, 0},
+		},
+		Text: component.Text{
+			Text: "Submit",
+		},
+		ActionHandler: component.ActionHandler{
+			Do: func (){
+				fmt.Println("This is probably working")
+			},
+			Event: event.OnClick,
+			Tag: "Button 2",
+
 		},
 	})
 
 	widget.NewButton(w, &widget.ButtonBuilder{
-		Bounds: component.Bounds{
-			Position: component.Position{X: 350, Y: 350}, 
-			W: 35, H: 20,
+		Transform: component.Transform{
+			Position: component.Position{X: 250, Y: 250}, 
+			Bounds: component.Bounds{W: 50, H: 20},
 		},
 		BackGround: component.BackGround{
-			Color: color.RGBA{0, 0, 255, 1},
+			Color: color.RGBA{255, 0, 255, 0},
 		},
 		Text: component.Text{
 			Text: "Submit",
 		},
-
+		ActionHandler: component.ActionHandler{
+			Do: func(){
+				fmt.Println("I am doing something")
+			},
+			Event: event.OnClick,
+			Tag: "Button 3",
+		},
 	})
 
 	widget.NewButton(w, (&widget.ButtonBuilder{}).NewButton())
-
 }
 
 func main() {
@@ -67,7 +97,6 @@ func main() {
 	ebiten.SetWindowResizable(true)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeOnlyFullscreenEnabled)
 	ebiten.SetWindowTitle("Ebitenditor")
-
 	g := engine.NewGame(&Game{})
 
 	fmt.Println("This is ebitenditor")

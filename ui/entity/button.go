@@ -5,7 +5,7 @@ import (
 )
 
 type Button struct {
-	component.Bounds
+	component.Transform
 	component.Icon
 	component.BackGround
 	component.Clickable
